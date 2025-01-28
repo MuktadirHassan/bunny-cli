@@ -26,10 +26,6 @@ var (
 
 // UploadFile uploads a file to the BunnyCDN storage with context support for timeouts and cancellation.
 func UploadFile(ctx context.Context, localPath string, relativePath string) error {
-	if STORAGE_ACCESS_KEY == "" || STORAGE_ZONE_NAME == "" {
-		return fmt.Errorf("env STORAGE_ACCESS_KEY or STORAGE_ZONE_NAME is not set")
-	}
-
 	if STORAGE_REGION == "" {
 		STORAGE_REGION = "sg"
 	}
