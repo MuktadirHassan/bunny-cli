@@ -19,18 +19,13 @@ import (
 
 var (
 	// Validate env vars
-	STORAGE_REGION     = os.Getenv("STORAGE_REGION") // Optional; default is "sg"
 	STORAGE_ZONE_NAME  = os.Getenv("STORAGE_ZONE_NAME")
 	STORAGE_ACCESS_KEY = os.Getenv("STORAGE_ACCESS_KEY")
 )
 
 // UploadFile uploads a file to the BunnyCDN storage with context support for timeouts and cancellation.
 func UploadFile(ctx context.Context, localPath string, relativePath string) error {
-	if STORAGE_REGION == "" {
-		STORAGE_REGION = "sg"
-	}
-
-	uploadPath := fmt.Sprintf("https://%s.storage.bunnycdn.com/%s/%s", STORAGE_REGION, STORAGE_ZONE_NAME, filepath.ToSlash(relativePath))
+	uploadPath := fmt.Sprintf("https://storage.bunnycdn.com/%s/%s", STORAGE_ZONE_NAME, filepath.ToSlash(relativePath))
 
 	// Open the file
 	file, err := os.Open(localPath)
