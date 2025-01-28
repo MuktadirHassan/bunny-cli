@@ -19,5 +19,16 @@ Available Commands:
 Flags:
   -h, --help   help for bunny-cli
 
+
+Required Environment Variables(For uploading files):
+  STORAGE_ZONE_NAME
+  STORAGE_ACCESS_KEY
+
+Required Environment Variables(For purging cache):
+  BUNNYCDN_API_KEY
+
+Optional Environment Variables:
+  STORAGE_ZONE_HOSTNAME  (Default: sg.storage.bunnycdn.com)
+
 Use "bunny-cli [command] --help" for more information about a command
 ```
