@@ -9,21 +9,27 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 )
 
-// Note:
-// localPath is the path to the file on the local machine, and remotePath is the path to the file on the BunnyCDN storage zone.
-// remotePath will have the same directory structure as localPath
-// For example, if localPath is ./path/to/file.txt, then remotePath will be be /path/to/file.txt
-
-func UploadFile(localPath string, relativePath string) error {
+var (
 	// Validate env vars
-	STORAGE_REGION := os.Getenv("STORAGE_REGION") // Optional; default is "sg"
-	STORAGE_ZONE_NAME := os.Getenv("STORAGE_ZONE_NAME")
-	STORAGE_ACCESS_KEY := os.Getenv("STORAGE_ACCESS_KEY")
+	STORAGE_REGION     = os.Getenv("STORAGE_REGION") // Optional; default is "sg"
+	STORAGE_ZONE_NAME  = os.Getenv("STORAGE_ZONE_NAME")
+	STORAGE_ACCESS_KEY = os.Getenv("STORAGE_ACCESS_KEY")
+)
+
+/*
+ localPath is the path to the file on the local machine, and remotePath is the path to the file on the BunnyCDN storage zone.
+ remotePath will have the same directory structure as localPath
+ For example, if localPath is ./path/to/file.txt, then remotePath will be be /path/to/file.txt
+*/
+// Example usage: UploadFile("./path/to/file.txt", "/path/to/file.txt")
+func UploadFile(localPath string, relativePath string) error {
 	if STORAGE_ACCESS_KEY == "" || STORAGE_ZONE_NAME == "" {
 		return fmt.Errorf("env STORAGE_ACCESS_KEY or STORAGE_ZONE_NAME is not set")
 	}
@@ -60,10 +66,20 @@ func UploadFile(localPath string, relativePath string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusCreated {
-		fmt.Printf("upload successful for: %s\n", localPath)
+		slog.Info("successfully uploaded file", slog.String("localPath", localPath), slog.String("remotePath", relativePath))
 	} else {
 		respBody, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("failed to upload %s: %d - %s", localPath, resp.StatusCode, string(respBody))
 	}
+	return nil
+}
+
+func UploadFileTest(localPath string, relativePath string) error {
+	time.Sleep(200 * time.Millisecond) // Simulate network latency
+	// if count == 5 {
+	// 	return fmt.Errorf("failed to upload %s", localPath)
+	// }
+	// count++
+	slog.Info("successfully uploaded file", slog.String("path", localPath))
 	return nil
 }
