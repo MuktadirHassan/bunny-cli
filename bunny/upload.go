@@ -25,11 +25,8 @@ var (
 )
 
 // UploadFile uploads a file to the BunnyCDN storage with context support for timeouts and cancellation.
-func UploadFile(ctx context.Context, localPath string, relativePath string) error {
-	if STORAGE_ZONE_HOSTNAME == "" {
-		STORAGE_ZONE_HOSTNAME = "sg.storage.bunnycdn.com"
-	}
-	uploadPath := fmt.Sprintf("https://%s/%s/%s", STORAGE_ZONE_HOSTNAME, STORAGE_ZONE_NAME, filepath.ToSlash(relativePath))
+func UploadFile(ctx context.Context, localPath string, relativePath string, STORAGE_ZONE_HOST string) error {
+	uploadPath := fmt.Sprintf("https://%s/%s/%s", STORAGE_ZONE_HOST, STORAGE_ZONE_NAME, filepath.ToSlash(relativePath))
 
 	// Open the file
 	file, err := os.Open(localPath)
@@ -74,7 +71,7 @@ func UploadFile(ctx context.Context, localPath string, relativePath string) erro
 }
 
 // UploadFileTest simulates uploading a file with context support (replace with actual implementation).
-func UploadFileTest(ctx context.Context, path string, relativePath string) error {
+func UploadFileTest(ctx context.Context, path string, relativePath string, STORAGE_ZONE_HOST string) error {
 	// Simulate file upload by sleeping for a short duration
 	select {
 	case <-time.After(3 * time.Second): // Simulate upload delay

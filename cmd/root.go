@@ -18,6 +18,9 @@ var (
 	failFast         bool
 	pullZoneName     string
 	fileInputPath    string
+	storageAccessKey string
+	storageZoneName  string
+	storageZoneHost  string
 )
 
 var RootCmd = &cobra.Command{
@@ -37,7 +40,7 @@ var uploadFolderCmd = &cobra.Command{
 		fmt.Println("Fail fast:", failFast)
 
 		// Call your UploadFolder function here
-		err := bunny.UploadFolder(folderPath, concurrencyLimit, timeout, failFast)
+		err := bunny.UploadFolder(folderPath, concurrencyLimit, timeout, failFast, storageAccessKey, storageZoneName, storageZoneHost)
 		if err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(1)
@@ -107,7 +110,12 @@ func init() {
 	uploadFolderCmd.Flags().IntVarP(&concurrencyLimit, "concurrency", "c", 10, "Number of concurrent workers")
 	uploadFolderCmd.Flags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "Timeout for each file upload")
 	uploadFolderCmd.Flags().BoolVarP(&failFast, "fail-fast", "F", true, "Enable fail-fast mode")
+	uploadFolderCmd.Flags().StringVarP(&storageAccessKey, "access-key", "a", "", "Storage access key (required)")
+	uploadFolderCmd.Flags().StringVarP(&storageZoneName, "zone-name", "z", "", "Storage zone name (required)")
+	uploadFolderCmd.Flags().StringVarP(&storageZoneHost, "zone-host", "H", "sg.storage.bunnycdn.com", "Storage zone host")
 	uploadFolderCmd.MarkFlagRequired("folder")
+	uploadFolderCmd.MarkFlagRequired("access-key")
+	uploadFolderCmd.MarkFlagRequired("zone-name")
 
 	// Add flags for upload-file command
 	uploadFileCmd.Flags().StringVarP(&filePath, "file", "f", "", "Path to the file to upload (required)")

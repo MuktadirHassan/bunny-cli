@@ -2,7 +2,6 @@ package bunny
 
 import (
 	"context"
-	"fmt"
 	"io/fs"
 	"log/slog"
 	"path/filepath"
@@ -12,10 +11,7 @@ import (
 
 // UploadFolder recursively uploads all files in the folder concurrently using a worker pool.
 // Example usage: UploadFolder("./path/to/folder", 3, 10*time.Second, true)
-func UploadFolder(folderPath string, concurrencyLimit int, timeout time.Duration, failFast bool) error {
-	if STORAGE_ACCESS_KEY == "" || STORAGE_ZONE_NAME == "" {
-		return fmt.Errorf("env STORAGE_ACCESS_KEY or STORAGE_ZONE_NAME is not set")
-	}
+func UploadFolder(folderPath string, concurrencyLimit int, timeout time.Duration, failFast bool, STORAGE_ACCESS_KEY string, STORAGE_ZONE_NAME string, STORAGE_ZONE_HOST string) error {
 	slog.Debug("uploading folder: ", slog.String("folder", folderPath))
 
 	var wg sync.WaitGroup
@@ -66,7 +62,7 @@ func UploadFolder(folderPath string, concurrencyLimit int, timeout time.Duration
 						defer uploadCancel()
 
 						// Attempt the upload with timeout
-						if err := UploadFile(uploadCtx, path, relativePath); err == nil {
+						if err := UploadFile(uploadCtx, path, relativePath, STORAGE_ZONE_HOST); err == nil {
 							break // Upload succeeded, exit retry loop
 						} else if err == context.Canceled && failFast {
 							uploadErr = err
