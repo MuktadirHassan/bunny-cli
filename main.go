@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"time"
 
-	"github.com/MuktadirHassan/bunny-cli/bunny"
+	"github.com/MuktadirHassan/bunny-cli/cmd"
 	"github.com/lmittmann/tint"
 )
 
@@ -21,8 +22,9 @@ func main() {
 			NoColor:    false,
 		}),
 	))
-	err := bunny.UploadFolder("./out", 5)
-	if err != nil {
-		slog.Debug(err.Error())
+
+	if err := cmd.RootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
