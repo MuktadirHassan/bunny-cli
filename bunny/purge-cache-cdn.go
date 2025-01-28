@@ -29,7 +29,7 @@ func CdnFullCachePurge(pullzoneID int) error {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("AccessKey", BUNNYCDN_API_KEY)
 
-	slog.Debug("purging cache for pullzone", slog.Int("pullzoneID", pullzoneID))
+	slog.Debug("purging full cache for pullzone", slog.Int("pullzoneID", pullzoneID))
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
