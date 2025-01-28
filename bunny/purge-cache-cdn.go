@@ -37,7 +37,7 @@ func CdnFullCachePurge(pullzoneID string) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
+	if resp.StatusCode == http.StatusNoContent {
 		slog.Debug("successfully purged cache for pullzone", slog.String("pullzoneID", pullzoneID))
 	} else {
 		respBody, _ := io.ReadAll(resp.Body)
